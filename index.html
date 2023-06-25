@@ -1,0 +1,135 @@
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Web 3 Calculator</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+
+    <script src='node_modules/web3/dist/web3.min.js'></script>
+    <script type='text/javascript'>
+        async function add(){
+            calc('+');
+        }
+
+        async function sub(){
+            calc('-')
+        }
+
+        async function mul(){
+            calc('*')
+        }
+
+        async function div(){
+            calc('/')
+        }
+    </script>
+
+    
+
+</head>
+
+<body>
+
+    <form method="get" action="#" id="my_form">
+        <fieldset>
+          <legend>Form</legend>
+          <ol>
+            <li>
+              <label for="name">Number 1</label>
+              <input type="text" name="a" id="a" >
+             </li>
+             <li>
+              <label for="name">Number2</label>
+              <input type="email" name="b" id="b" >
+             </li>
+            </ol>
+         </fieldset>
+    </form>
+
+    
+
+
+    <span name='result' id='result'>Not ready to calculate</span>
+
+
+    <script type ='text/javascript'>
+        async function loadWeb3() {
+            if (window.ethereum) {
+                window.web3 = new Web3(window.ethereum);
+                window.ethereum.enable();
+            }
+        }
+
+        async function loadContract() {
+            return await new window.web3.eth.Contract(
+                            [
+                {
+                    "constant": true,
+                    "inputs": [
+                        {
+                            "internalType": "int256",
+                            "name": "a",
+                            "type": "int256"
+                        },
+                        {
+                            "internalType": "int256",
+                            "name": "b",
+                            "type": "int256"
+                        },
+                        {
+                            "internalType": "string",
+                            "name": "operand",
+                            "type": "string"
+                        }
+                    ],
+                    "name": "execute",
+                    "outputs": [
+                        {
+                            "internalType": "int256",
+                            "name": "",
+                            "type": "int256"
+                        }
+                    ],
+                    "payable": false,
+                    "stateMutability": "view",
+                    "type": "function"
+                }
+            ],
+            "0xdD1ADCB52e9F7D62B63ED361D0c25f84c580267D"
+            );
+        }
+
+        
+
+        async function calc(operand){
+            let a = parseInt(document.getElementById('a').value);
+            let b = parseInt(document.getElementById('a').value);
+            if (isNaN(a)) a = 0;
+            if (isNaN(b)) b = 0;
+
+            var result = window.contract.methods.execute(a, b, operand).call();
+            document.getElementById("result").innerHTML = "Result: " +  result;
+        }
+
+        async function load() {
+            await loadWeb3();
+            window.contract = await loadContract();
+            document.getElementById("result").innerHTML = 'Result: 0';            
+        }
+
+
+        load();
+            
+    </script>
+
+
+    <button onclick="add()">+</button>
+    <button onclick="sub()">-</button>
+    <button onclick="mul()">*</button>
+    <button onclick="div()">/</button>
+
+
+</body>
+
+</html>
